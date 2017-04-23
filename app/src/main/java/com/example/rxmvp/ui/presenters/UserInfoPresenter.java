@@ -27,9 +27,9 @@ public class UserInfoPresenter extends LcePresenter<UserInfo, LceView<UserInfo>>
         final Subscription subscription = userModel.observeCurrentUser()
                 .distinctUntilChanged()
                 .filter(user -> user != null)
+                .subscribeOn(config.bgScheduler())
                 .observeOn(config.uiScheduler())
-                .doOnNext(user -> load(userModel.getUserInfo(user.name())))
-                .subscribe();
+                .subscribe(user -> load(userModel.getUserInfo(user.name())));
         unsubscribeOnUnbindView(subscription);
     }
 }

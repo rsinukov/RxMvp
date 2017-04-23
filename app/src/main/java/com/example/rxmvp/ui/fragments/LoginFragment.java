@@ -7,13 +7,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.rxmvp.R;
 import com.example.rxmvp.models.UserModel;
 import com.example.rxmvp.ui.presenters.LoginPresenter;
-import com.example.rxmvp.ui.views.LceView;
+import com.example.rxmvp.ui.views.LoginView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
 
@@ -23,12 +25,13 @@ import butterknife.OnClick;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;
+import rx.Observable;
 
 import static com.example.rxmvp.RxMvpApplication.appComponent;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 import static rx.schedulers.Schedulers.io;
 
-public class LoginFragment extends Fragment implements LceView<String> {
+public class LoginFragment extends Fragment implements LoginView {
 
     @SuppressWarnings("NullableProblems") // onViewCreated
     @Bind(R.id.fragment_login_user_name_field)
@@ -39,6 +42,11 @@ public class LoginFragment extends Fragment implements LceView<String> {
     @Bind(R.id.fragment_login_password_field)
     @NonNull
     EditText passwordField;
+
+    @SuppressWarnings("NullableProblems") // onViewCreated
+    @Bind(R.id.fragment_login_register_button)
+    @NonNull
+    Button loginButton;
 
     @SuppressWarnings("NullableProblems") // onViewCreated
     @Bind(R.id.fragment_login_register_container)
@@ -96,6 +104,23 @@ public class LoginFragment extends Fragment implements LceView<String> {
     void onRegisterClick() {
         // TODO: check fields
         presenter.registerUser(userNameField.getText().toString(), passwordField.getText().toString());
+    }
+
+    @Override
+    public void onFieldsValidChanged(boolean isValid) {
+        loginButton.setEnabled(isValid);
+    }
+
+    @Override
+    @NonNull
+    public Observable<CharSequence> userName() {
+        return RxTextView.textChanges(userNameField);
+    }
+
+    @Override
+    @NonNull
+    public Observable<CharSequence> password() {
+        return RxTextView.textChanges(passwordField);
     }
 
     @Override
