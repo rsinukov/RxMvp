@@ -43,7 +43,7 @@ public class ApiModule {
                 return Observable.timer(3, TimeUnit.SECONDS)
                         .toSingle()
                         .map(whatever -> UserInfo.builder()
-                                .avatarUrl("http://gregjordan.net/dino-nuclear-drums.png")
+                                .avatarUrl("https://upload.wikimedia.org/wikipedia/commons/0/0e/Trex_charge.jpg")
                                 .name(request.name())
                                 .build()
                         );
